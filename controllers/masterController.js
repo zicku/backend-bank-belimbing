@@ -81,30 +81,24 @@ exports.deleteAccount = async (req, res) => {
   }
 };
 
-// --- CRUD DEPOSITO TYPE (BAGIAN YANG DIPERBAIKI) ---
+// --- CRUD DEPOSITO TYPE  ---
 
 exports.createDepositoType = async (req, res) => {
   try {
-    // 1. Debugging: Cek data yang masuk
+    // 1. Debugging
     console.log("Data diterima dari frontend:", req.body);
-
-    // 2. Ambil data sesuai nama kolom di database Anda (name, yearly_return)
     const { name, yearly_return } = req.body;
 
-    // 3. Validasi: Pastikan data tidak kosong
     if (!name || yearly_return === undefined || yearly_return === "") {
       return res.status(400).json({ message: "Nama dan Bunga wajib diisi!" });
     }
 
-    // 4. Konversi bunga ke angka float untuk mencegah error database
     const rate = parseFloat(yearly_return);
     if (isNaN(rate)) {
       return res
         .status(400)
         .json({ message: "Bunga harus berupa angka (contoh: 5.5)" });
     }
-
-    // 5. Panggil Model dengan parameter yang benar
     await DepositoType.create(name, rate);
 
     res.status(201).json({ message: "Deposito Type Created" });
@@ -121,8 +115,6 @@ exports.updateDepositoType = async (req, res) => {
   try {
     const { id } = req.params;
     const { name, yearly_return } = req.body;
-
-    // Validasi & Konversi juga untuk update
     const rate = parseFloat(yearly_return);
 
     await DepositoType.update(id, name, rate);
